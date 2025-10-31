@@ -133,7 +133,7 @@ if __name__ == "__main__":
     start = time.time()
     # execute the coroutines
     # creates max_customers * max_services entrys
-    generated_data = asyncio.run(generate_data_async(max_customers=10, max_services=10)) 
+    generated_data = asyncio.run(generate_data_async(max_customers=100, max_services=1000)) 
 
     rprint("[bold blue]Saving to csv...[/bold blue]")
     export_as_csv(generated_data, current_path / "data" / "example.csv")
