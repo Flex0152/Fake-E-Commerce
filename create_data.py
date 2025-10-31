@@ -86,8 +86,8 @@ def export_as_csv(data: str, target: Path) -> None:
         "Status last use"]
     
     if len(data) == 0:
-            rprint("Die Daten entsprechen nicht den Vorgaben!")
-            return
+        rprint("Die Daten entsprechen nicht den Vorgaben!")
+        return
     
     with open(target, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=";", quoting=csv.QUOTE_MINIMAL)
