@@ -59,28 +59,13 @@ async def generate_data_async(number: int) -> list:
     tasks = [make_single_entry() for _ in range(number)]
     return await asyncio.gather(*tasks)
 
-def convertto_dataframe(data) -> pd.DataFrame:
-    """Converts the random Data into a Dataframe"""
-    result = []
-    for item in data:
-        tmp = {}
-        tmp['Usage Time'] = item[0]
-        tmp['Customer ID'] = item[1]['customer_id']
-        tmp['First_Name'] = item[1]['first_name']
-        tmp['Last_Name'] = item[1]['last_name']
-        tmp['City'] = item[1]['city']
-        tmp['Servicename'] = item[2]['service_name']
-        tmp['Costs per Month'] = item[2]['costs_per_month']
-        tmp['Status last use'] = item[3]
-        result.append(tmp)
-    return pd.DataFrame(result)
-
 def export_as_csv(data: str, target: Path) -> None:
     header = [
         "Usage Time",
         "Customer ID",
         "First_Name",
-        "Last_Name,City",
+        "Last_Name",
+        "City",
         "Servicename",
         "Costs per Month",
         "Status last use"]
