@@ -59,7 +59,7 @@ async def generate_data_async(number: int) -> list:
     tasks = [make_single_entry() for _ in range(number)]
     return await asyncio.gather(*tasks)
 
-def export_as_csv(data: str, target: Path) -> None:
+def export_as_csv(data: list, target: Path) -> None:
     header = [
         "Usage Time",
         "Customer ID",
@@ -71,25 +71,28 @@ def export_as_csv(data: str, target: Path) -> None:
         "Status last use"]
     
     if len(data) == 0:
-        rprint("Die Daten entsprechen nicht den Vorgaben!")
+        rprint("Keine Daten!")
         return
     
     with open(target, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=";", quoting=csv.QUOTE_MINIMAL)
         writer.writerow(header)    
-        for item in data:
-            writer.writerow(
-                [
-                    item[0],
-                    item[1]['customer_id'],
-                    item[1]['first_name'],
-                    item[1]['last_name'],
-                    item[1]['city'],
-                    item[2]['service_name'],
-                    item[2]['costs_per_month'],
-                    item[3]
-                ]
-            )
+        for i, item in enumerate(data):
+            try:
+                writer.writerow(
+                    [
+                        item[0],
+                        item[1]['customer_id'],
+                        item[1]['first_name'],
+                        item[1]['last_name'],
+                        item[1]['city'],
+                        item[2]['service_name'],
+                        item[2]['costs_per_month'],
+                        item[3]
+                    ]
+                )
+            except (KeyError, IndexError, TypeError) as e:
+                rprint(f"[yellow]Datensatz {i} fehlerhaft: {e}[/yellow]")
 
 
 if __name__ == "__main__":
