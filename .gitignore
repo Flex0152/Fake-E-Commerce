@@ -12,6 +12,7 @@ wheels/
 .vscode/
 Dokumentation/
 data/
+archiv/
 *.csv
 *.db
 *.duckdb
