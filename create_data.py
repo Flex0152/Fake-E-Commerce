@@ -84,12 +84,14 @@ def export_as_csv(data: str, target: Path) -> None:
         "Servicename",
         "Costs per Month",
         "Status last use"]
-    with open(target, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=";", quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(header)
-        if len(data) == 0:
+    
+    if len(data) == 0:
             rprint("Die Daten entsprechen nicht den Vorgaben!")
             return
+    
+    with open(target, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=";", quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(header)    
         for item in data:
             writer.writerow(
                 [
