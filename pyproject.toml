@@ -10,6 +10,7 @@ dependencies = [
     "faker>=37.12.0",
     "ipython>=9.6.0",
     "matplotlib>=3.10.7",
+    "nbformat>=5.10.4",
     "pandas>=2.3.3",
     "rich>=14.2.0",
 ]
