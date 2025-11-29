@@ -9,9 +9,10 @@ def connect_database(db_path: str) -> DuckDBPyConnection:
     connect = dd.connect(db_path, read_only=True)
     return connect
 
-def get_cities(con):
+def get_cities(db_path: str):
     """Alle zur Verfügung stehenden Städte."""
-    return con.execute("SELECT DISTINCT City FROM tblCustomers ORDER BY City").df()
+    with connect_database(db_path) as con:
+        return con.execute("SELECT DISTINCT City FROM tblCustomers ORDER BY City").df()
 
 def get_city_profit(city: str, con: DuckDBPyConnection) -> pd.DataFrame:
     """Anzahl und Umsatz der Bestellungen einer Stadt"""
