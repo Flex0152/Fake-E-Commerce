@@ -99,6 +99,9 @@ def export_as_csv(data: list, target: Path) -> None:
         rprint("Keine Daten!")
         return
     
+    # Erstellt Target wenn nötig
+    target.parent.mkdir(parents=True, exist_ok=True)
+        
     with open(target, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=";", quoting=csv.QUOTE_MINIMAL)
         writer.writerow(header)    
