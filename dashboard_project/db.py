@@ -6,7 +6,7 @@ from icecream import ic
 from contextlib import contextmanager
 
 
-DB_PATH = Path("../data/warehouse.duckdb")
+DB_PATH = Path("data/warehouse.duckdb")
 DATA_PATH = Path("data/example.csv")
 
 
@@ -32,66 +32,74 @@ class DuckDBManager:
         finally:
             conn.close()
 
+    def _create_tblServices(self, con: DuckDBPyConnection):
+        con.execute(
+            """
+            CREATE OR REPLACE TABLE tblServices AS
+            WITH cte AS (
+            SELECT DISTINCT
+            Servicename,
+            Costs
+            FROM staging_data
+            ORDER BY Costs)
+            SELECT 
+            ROW_NUMBER() OVER () AS service_id,
+            Servicename, 
+            Costs
+            FROM CTE
+            """)
+        
+    def _create_tblCustomers(self, con: DuckDBPyConnection):
+        con.execute(
+            """
+            CREATE OR REPLACE TABLE tblCustomers AS
+            SELECT DISTINCT
+            "Customer ID" as customer_id,
+            First_Name,
+            Last_Name,
+            Gender,
+            City,
+            "Support Level" as support_level,
+            Birthday,
+            date_diff('year', Birthday, today()) as Age
+            FROM staging_data
+            ORDER BY Last_Name
+            """
+        )
+
+    def tblOrders(self, con: DuckDBPyConnection):
+        con.execute(
+            """
+            CREATE OR REPLACE TABLE tblOrders AS
+            SELECT 
+            ROW_NUMBER () OVER () as order_id,
+            sd."Purchase date" as purchase_date,
+            c.customer_id,
+            s.service_id,
+            sd.payment_method,
+            sd."Sales Canal" as sales_canal,
+            sd."Customer Satisfaction" as satisfaction
+            FROM 
+            staging_data sd
+            JOIN tblCustomers c ON sd."Customer ID" = c.customer_id
+            JOIN tblServices s ON sd.Servicename = s.Servicename
+            """
+        )
+
+    def _create_staging_data(self, con: DuckDBPyConnection, data_path: Path):
+        con.execute(
+            "CREATE OR REPLACE TABLE staging_data AS " \
+            f"SELECT * FROM read_csv_auto($data_path)",
+            {"data_path": str(data_path.absolute())})
+
     def create_table(self) -> None:
         try:
-            with self.connect_database() as connect:
-                # Rohdaten
-                connect.execute(
-                    "CREATE OR REPLACE TABLE staging_data AS " \
-                    f"SELECT * FROM read_csv_auto($data_path)",
-                    {"data_path": str(self.data_path.absolute())})
+            with self.connect_database() as connect:                
+                self._create_staging_data(connect, self.data_path)
+                self._create_tblServices(connect)
+                self._create_tblCustomers(connect)
+                self._createOrders(connect)
                 
-                # Services
-                connect.execute(
-                    """
-                    CREATE OR REPLACE TABLE tblServices AS
-                    WITH cte AS (
-                    SELECT DISTINCT
-                    Servicename,
-                    Costs
-                    FROM staging_data
-                    ORDER BY Costs)
-                    SELECT 
-                    ROW_NUMBER() OVER () AS service_id,
-                    Servicename, 
-                    Costs
-                    FROM CTE
-                    """)
-                # Customers
-                connect.execute(
-                    """
-                    CREATE OR REPLACE TABLE tblCustomers AS
-                    SELECT DISTINCT
-                    "Customer ID" as customer_id,
-                    First_Name,
-                    Last_Name,
-                    Gender,
-                    City,
-                    "Support Level" as support_level,
-                    Birthday,
-                    date_diff('year', Birthday, today()) as Age
-                    FROM staging_data
-                    ORDER BY Last_Name
-                    """
-                )
-                # Orders
-                connect.execute(
-                    """
-                    CREATE OR REPLACE TABLE tblOrders AS
-                    SELECT 
-                    ROW_NUMBER () OVER () as order_id,
-                    sd."Purchase date" as purchase_date,
-                    c.customer_id,
-                    s.service_id,
-                    sd.payment_method,
-                    sd."Sales Canal" as sales_canal,
-                    sd."Customer Satisfaction" as satisfaction
-                    FROM 
-                    staging_data sd
-                    JOIN tblCustomers c ON sd."Customer ID" = c.customer_id
-                    JOIN tblServices s ON sd.Servicename = s.Servicename
-                    """
-                )
                 ic("Datenbank steht bereit!")
         except dd.Error as e:
             raise e
