@@ -294,6 +294,21 @@ wheels = [
 ]
 
 [[package]]
+name = "icecream"
+version = "2.1.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asttokens" },
+    { name = "colorama" },
+    { name = "executing" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/be/a89ec4132ddb4481f9587f736b8a01a07378f9e71de73549223ff1cd41f7/icecream-2.1.8.tar.gz", hash = "sha256:37269bbc62b02f0d85bfaf3a0eb4df272c967fad059f7ddcdaee5303ea2b2a62", size = 18337, upload-time = "2025-09-14T09:31:09.938Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/5f/f877d2cfcad41c0db98b120872f67b805fde5e6d407e584e9edfc9dec35c/icecream-2.1.8-py3-none-any.whl", hash = "sha256:10b1c39dcb54cb28eb487bac56c35dbf9c2b2f406d24340e1a615c3f17274852", size = 15714, upload-time = "2025-09-14T09:31:08.647Z" },
+]
+
+[[package]]
 name = "idna"
 version = "3.11"
 source = { registry = "https://pypi.org/simple" }
@@ -1107,6 +1122,7 @@ dependencies = [
     { name = "dash" },
     { name = "duckdb" },
     { name = "faker" },
+    { name = "icecream" },
     { name = "ipython" },
     { name = "matplotlib" },
     { name = "nbformat" },
@@ -1119,6 +1135,7 @@ requires-dist = [
     { name = "dash", specifier = ">=3.3.0" },
     { name = "duckdb", specifier = ">=1.4.2" },
     { name = "faker", specifier = ">=37.12.0" },
+    { name = "icecream", specifier = ">=2.1.8" },
     { name = "ipython", specifier = ">=9.6.0" },
     { name = "matplotlib", specifier = ">=3.10.7" },
     { name = "nbformat", specifier = ">=5.10.4" },
