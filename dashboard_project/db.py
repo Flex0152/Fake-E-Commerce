@@ -67,7 +67,7 @@ class DuckDBManager:
             """
         )
 
-    def tblOrders(self, con: DuckDBPyConnection):
+    def _create_tblOrders(self, con: DuckDBPyConnection):
         con.execute(
             """
             CREATE OR REPLACE TABLE tblOrders AS
@@ -98,7 +98,7 @@ class DuckDBManager:
                 self._create_staging_data(connect, self.data_path)
                 self._create_tblServices(connect)
                 self._create_tblCustomers(connect)
-                self._createOrders(connect)
+                self._create_Orders(connect)
                 
                 ic("Datenbank steht bereit!")
         except dd.Error as e:
