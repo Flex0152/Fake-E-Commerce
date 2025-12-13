@@ -18,7 +18,7 @@ class DuckDBManager:
 
         # ohne Daten, keine Analyse möglich
         if not data_path.is_file():
-            raise FileNotFoundError("Daten nicht gefunden!")                
+            raise FileNotFoundError(f"Daten nicht gefunden! Pfad: {data_path}")                
 
         # initialisierung der Attribute
         self.data_path: Path = data_path
@@ -64,8 +64,7 @@ class DuckDBManager:
             date_diff('year', Birthday, today()) as Age
             FROM staging_data
             ORDER BY Last_Name
-            """
-        )
+            """)
 
     def _create_tblOrders(self, con: DuckDBPyConnection):
         con.execute(
@@ -83,8 +82,7 @@ class DuckDBManager:
             staging_data sd
             JOIN tblCustomers c ON sd."Customer ID" = c.customer_id
             JOIN tblServices s ON sd.Servicename = s.Servicename
-            """
-        )
+            """)
 
     def _create_staging_data(self, con: DuckDBPyConnection, data_path: Path):
         con.execute(
@@ -98,11 +96,9 @@ class DuckDBManager:
                 self._create_staging_data(connect, self.data_path)
                 self._create_tblServices(connect)
                 self._create_tblCustomers(connect)
-                self._create_Orders(connect)
+                self._create_tblOrders(connect)
                 
                 ic("Datenbank steht bereit!")
-        except dd.Error as e:
-            raise e
         except Exception as e:
             raise e
 
