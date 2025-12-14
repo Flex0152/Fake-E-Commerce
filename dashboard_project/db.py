@@ -154,11 +154,29 @@ class DuckDBManager:
         try:
             with self.connect_database() as connect:
                 result = connect.execute(query, {'city': city}).df()
-        except dd.Error as e:
-            raise e
         except Exception as e:
             raise e
 
+        return result
+    
+    def total_overview_orders(self):
+    # Welcher Service ist der beliebteste?
+        query = """
+        SELECT 
+        count(s.service_id) as in_total,
+        s.Servicename
+        FROM 
+        tblOrders o
+        JOIN tblServices s ON o.service_id = s.service_id
+        GROUP BY o.service_id, s.Servicename
+        ORDER BY in_total desc
+        """
+        try:
+            with self.connect_database() as connect:
+                result = connect.execute(query).df()
+        except Exception as e:
+            raise e
+        
         return result
     
 
