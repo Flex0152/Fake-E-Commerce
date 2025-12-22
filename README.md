@@ -14,3 +14,12 @@ Die Datenbank wird immer neu erstellt. Das ermöglicht die Analyse der im Moment
 aktuellen Werte. 
 Wenn alle Werte wichtig sind, sollte die Datenbank losgelöst von den Daten erstellt werden. 
 Die Daten würden dann in eigenen Routinen importiert werden (Stichwort MERGE). 
+
+## Installation
+```bash
+# Image erstellen
+podman build -f dashboard_project/Dockerfile -t dashboard_app .
+
+# Container erstellen
+podman run -d --name dashboard_app -p 8080:8050 -v ./data:/app/data:Z dashboard_app:latest
+```
